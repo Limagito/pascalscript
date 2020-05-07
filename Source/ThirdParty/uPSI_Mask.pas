@@ -25,7 +25,6 @@ type
 
 implementation
 
-
 uses
    Windows ,StdCtrls ,Controls ,Messages ,Forms ,Graphics ,Menus ,Mask, MaskUtils;
 
@@ -144,23 +143,21 @@ end;
 (*----------------------------------------------------------------------------*)
 procedure RIRegister_Mask(CL: TPSRuntimeClassImporter);
 begin
-  with CL.Add(EDBEditError) do
+  with CL.Add(EDBEditError) do {+};{+.}
   RIRegister_TCustomMaskEdit(CL);
   RIRegister_TMaskEdit(CL);
 end;
 
- 
- 
 { TPSImport_Mask }
 (*----------------------------------------------------------------------------*)
 procedure TPSImport_Mask.CompOnUses(CompExec: TPSScript);
 begin
-  { nothing } 
+  { nothing }
 end;
 (*----------------------------------------------------------------------------*)
 procedure TPSImport_Mask.ExecOnUses(CompExec: TPSScript);
 begin
-  { nothing } 
+  { nothing }
 end;
 (*----------------------------------------------------------------------------*)
 procedure TPSImport_Mask.CompileImport1(CompExec: TPSScript);
@@ -170,7 +167,7 @@ end;
 (*----------------------------------------------------------------------------*)
 procedure TPSImport_Mask.CompileImport2(CompExec: TPSScript);
 begin
-  { nothing } 
+  { nothing }
 end;
 (*----------------------------------------------------------------------------*)
 procedure TPSImport_Mask.ExecImport1(CompExec: TPSScript; const ri: TPSRuntimeClassImporter);
@@ -181,7 +178,7 @@ end;
 (*----------------------------------------------------------------------------*)
 procedure TPSImport_Mask.ExecImport2(CompExec: TPSScript; const ri: TPSRuntimeClassImporter);
 begin
-  { nothing } 
+  { nothing }
 end;
 
 end.

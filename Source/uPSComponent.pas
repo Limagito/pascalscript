@@ -621,11 +621,12 @@ begin
     if FComp.Compile(dta) then
     begin
       FCanAdd := False;
-      if (not SuppressLoadData) and (not LoadExec) then
-      begin
+      if (not SuppressLoadData) and (not LoadExec) then begin
+        {+}
+        FComp.MakeError('', ecInternalError, tbtString('Failed Define/Load Exec'));
+        {+.}
         Result := False;
-      end else
-        Result := True;
+      end else Result := True;
     end else Result := False;
     Fpp.AdjustMessages(Comp);
   end else
@@ -636,6 +637,9 @@ begin
       FCanAdd := False;
       if not LoadExec then
       begin
+        {+}
+        FComp.MakeError('', ecInternalError, tbtString('Failed Define/Load Exec'));
+        {+.}
         Result := False;
       end else
         Result := True;
@@ -823,20 +827,18 @@ var
   aMsg: TPSPascalCompilerMessage;
   {+.}
 begin
-  if Name = 'SYSTEM' then
-  begin
-    for i := 0 to FPlugins.Count -1 do
-    begin
+  if Name = 'SYSTEM' then begin
+    for i := 0 to FPlugins.Count -1 do begin
     {+}
-    aPluginItem := TPSPluginItem(FPlugins.Items[i]);
+      aPluginItem := TPSPluginItem(FPlugins.Items[i]);
       if (aPluginItem <> nil)and (aPluginItem.Plugin <> nil) then
         aPluginItem.Plugin.CompOnUses(Self); // @dbg: aPluginItem.Plugin.ClassType
     {+.}
     end;
-    for i := 0 to FPlugins.Count -1 do
-    begin
+
+    for i := 0 to FPlugins.Count -1 do begin
     {+}
-    aPluginItem := TPSPluginItem(FPlugins.Items[i]);
+      aPluginItem := TPSPluginItem(FPlugins.Items[i]);
       if (aPluginItem <> nil)and (aPluginItem.Plugin <> nil) then
         aPluginItem.Plugin.CompileImport1(Self); // @dbg: aPluginItem.Plugin.ClassType
     {+.}
@@ -844,10 +846,9 @@ begin
 
     DoOnCompImport;
 
-    for i := 0 to FPlugins.Count -1 do
-    begin
+    for i := 0 to FPlugins.Count -1 do begin
     {+}
-    aPluginItem := TPSPluginItem(FPlugins.Items[i]);
+      aPluginItem := TPSPluginItem(FPlugins.Items[i]);
       if (aPluginItem <> nil)and (aPluginItem.Plugin <> nil) then
         aPluginItem.Plugin.CompileImport2(Self); // @dbg: aPluginItem.Plugin.ClassType
     {+.}
@@ -855,23 +856,22 @@ begin
 
     DoOnCompile;
 
-    Result := true;
+    Result := True;
     for i := 0 to Sender.MsgCount -1 do begin
     {+}
-    aMsg := Sender.Msg[i];
+      aMsg := Sender.Msg[i];
       //if aMsg is TPSPascalCompilerError then // not any inheritance : class(TPSPascalCompilerError)
       if (aMsg <> nil) and (aMsg.ClassType = TPSPascalCompilerError) then // best perfomance
-    begin
-      Result := false;
-    Break; //!!!
-    end;
+      begin
+        Result := false;
+        Break; //!!!
+      end;
     {+.}
     end;
-  end
-  else begin
-    Result := DoOnUnknowUses (Sender, Name);
-{    If Not Result then
-      Sender.MakeError('', ecUnknownIdentifier, Name);}
+  end else begin
+    Result := DoOnUnknowUses(Sender, Name);
+    {If Not Result then
+       Sender.MakeError('', ecUnknownIdentifier, Name);}
   end;
 end;
 

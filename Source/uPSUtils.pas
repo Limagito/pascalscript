@@ -7,7 +7,7 @@ uses
 
 {+}
 const
-  uPSVersion = 202001031637; // format: yyyymmddhhnn
+  uPSVersion = 202004301657; // format: yyyymmddhhnn
             // yyyymmddhhnn
   {$EXTERNALSYM uPSVersion}
   (*
@@ -15,7 +15,7 @@ const
   // <sample>
   uses ... uPSUtils ...
   {$warn comparison_true off}
-  {$if (not declared(uPSVersion)) or (uPSVersion < 202001031637)}
+  {$if (not declared(uPSVersion)) or (uPSVersion < 202004301657)}
     //{$warn message_directive on}{$MESSAGE WARN 'Need update RemObjects Pascal Script Library'}
     {$MESSAGE FATAL 'Need update RemObjects Pascal Script Library'}
   {$ifend}{$warnings on}
@@ -41,7 +41,7 @@ const
 
   PSAddrNegativeStackStart = 1073741824;
 type
-  TbtString = {$IFDEF DELPHI2009UP}AnsiString{$ELSE}String{$ENDIF};
+  TbtString = {$IFDEF UNICODE}AnsiString{$ELSE}String{$ENDIF}; // UNICODE or DELPHI2009UP
 
   TPSBaseType = Byte;
 
@@ -85,6 +85,9 @@ const
 
 {$IFNDEF PS_NOINT64}
   btS64             = 17;
+  {+}
+  btU64             = btS64{30}; // TODO: change value to unique and add this type of processing
+  {+.}
 {$ENDIF}
 
   btChar            = 18;
@@ -324,7 +327,14 @@ type
   tbtCurrency = Currency;
 
 {$IFNDEF PS_NOINT64}
-  tbts64 = int64;
+  TbtS64 = Int64;
+  {+} // TODO: add this type of processing
+  {$if declared(UInt64)}
+  TbtU64 = UInt64;
+  {$else}
+  TbtU64 = Int64;
+  {$ifend}
+  {+.}
 {$ENDIF}
 
   tbtchar = {$IFDEF DELPHI4UP}AnsiChar{$ELSE}CHAR{$ENDIF};
@@ -1579,12 +1589,12 @@ begin
 end;
 //-------------------------------------------------------------------
 
-function TPSList.GetItem(Nr: Cardinal): Pointer;  {12}
+function TPSList.GetItem(Nr: Cardinal): Pointer;
 begin
   if Nr < FCount then
-     GetItem := FData[Nr]
+    Result := FData[Nr]
   else
-    GetItem := nil;
+    Result := nil;
 end;
 
 //-------------------------------------------------------------------
